@@ -13,7 +13,7 @@ set(single_file_examples
 
 foreach(example ${single_file_examples})
     add_executable(${example} "${example}.cpp")
-    target_link_libraries(${example} PRIVATE torrent-rasterbar)
+    #target_link_libraries(${example} PRIVATE torrent-rasterbar)
 endforeach(example)
 
 #add_executable(client_test
