@@ -3,8 +3,8 @@ project(LinkedList-examples)
 
 #aux_source_directory(. single_file_examples)	
 set(single_file_examples
-	arrayList
-	insertList
+	ArrayList
+	InsertList
 	MergeList
 	MergeList2
 	ReverseList

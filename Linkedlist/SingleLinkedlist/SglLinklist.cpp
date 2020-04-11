@@ -12,9 +12,11 @@ Description:有头的单链表增删改查
 
 #include<stdio.h>
 #include<stdlib.h>
+
 #define ERROR 0
 #define OK 1
 #define NULL 0
+
 typedef int ElmType;
 typedef int Status;
 typedef struct LNode {
@@ -23,6 +25,7 @@ typedef struct LNode {
 
 }LNode, * LinkList;
 LinkList p, q;
+
 int n;
 
 void CreateList(LinkList& L, int n)//建立

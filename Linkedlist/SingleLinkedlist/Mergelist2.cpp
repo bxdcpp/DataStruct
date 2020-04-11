@@ -94,7 +94,7 @@ void output(NODE* s)
 	printf("\n");
 
 }
-void deleteLinkList(NODE*& ll)
+void DeleteLinkList(NODE*& ll)
 {
 	NODE* tmp;
 	tmp = ll;
@@ -120,6 +120,6 @@ int main()
 	printf("输出合并链表C:\n");
 	C = Linklistcombine(A, B);
 	output(C);
-	deleteLinkList(C);
+	DeleteLinkList(C);
 	return 0;
 }
