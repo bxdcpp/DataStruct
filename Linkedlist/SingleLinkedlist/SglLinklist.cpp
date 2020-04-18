@@ -17,11 +17,11 @@ Description:有头的单链表增删改查
 #define OK 1
 #define NULL 0
 
-typedef int ElmType;
+typedef int ElemType;
 typedef int Status;
 typedef struct LNode {
-	ElmType data;
-	struct LNode* next;
+	ElemType data;
+	LNode* next;
 
 }LNode, * LinkList;
 LinkList p, q;
@@ -45,7 +45,7 @@ void CreateList(LinkList& L, int n)//建立
 	p->next = NULL;
 }
 
-Status GetElem(LinkList L, int i, ElmType& e)//查找
+Status GetElem(LinkList L, int i, ElemType& e)//查找
 {
 	int j = 1;
 	p = L->next;
@@ -60,7 +60,7 @@ Status GetElem(LinkList L, int i, ElmType& e)//查找
 	return OK;
 }
 
-Status LinkModefy(LinkList L, int i, ElmType e)//修改
+Status LinkModefy(LinkList L, int i, ElemType e)//修改
 {
 	int j = 1;
 	p = L->next;
@@ -75,7 +75,7 @@ Status LinkModefy(LinkList L, int i, ElmType e)//修改
 	return OK;
 }
 
-Status LinkInsert(LinkList& b, int i, ElmType e)//插入
+Status LinkInsert(LinkList& b, int i, ElemType e)//插入
 {
 	LinkList s;
 	p = b;
@@ -96,7 +96,7 @@ Status LinkInsert(LinkList& b, int i, ElmType e)//插入
 
 }
 
-Status ListDelete(LinkList& L, int i, ElmType& e)//删除
+Status ListDelete(LinkList& L, int i, ElemType& e)//删除
 {
 	p = L;
 	int j = 0;
@@ -128,7 +128,7 @@ int SLTraverse(LinkList L)
 
 void main()
 {
-	ElmType T, a;
+	ElemType T, a;
 	int n = 5;
 	LinkList L = NULL;
 	printf("----------------请输入5个数构建链表----------------\n");
