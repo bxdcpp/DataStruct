@@ -6,6 +6,8 @@ set(single_file_examples
 BinTree
 BinTree2
 BinTree3
+SortTemplates
+SearchExample
   )
 
 foreach(example ${single_file_examples})
