@@ -5,10 +5,10 @@
 using namespace std;
 # define OK 1
 # define ERROR 0
-typedef struct BiTNode
+typedef struct TreeNode
 {
-	char data;
-	struct BiTNode* lchild, * rchild;
+	char val;
+	struct TreeNode* lchild, * rchild;
 }BiTNode, * BiTree;
 
 int CreateBiTree(BiTree& T) //建立二叉树
@@ -18,13 +18,13 @@ int CreateBiTree(BiTree& T) //建立二叉树
 	if (ch == '/') T = NULL;
 	else
 	{
-		T = (BiTNode*)malloc(sizeof(BiTNode));
-		if (!(T = (BiTNode*)malloc(sizeof(BiTNode))))//分配空间失败
+		T = (TreeNode*)malloc(sizeof(TreeNode));
+		if (!(T = (TreeNode*)malloc(sizeof(TreeNode))))//分配空间失败
 		{
 			cout << "Overflow!";
 			return (ERROR);
 		}
-		T->data = ch;
+		T->val = ch;
 		cout << ch << "->left child" << endl;
 		CreateBiTree(T->lchild);
 		cout << ch << "->right child" << endl;
@@ -37,7 +37,7 @@ int PreOrderTraverse(BiTree T) //先序遍历递归法
 {
 	if (T)
 	{
-		cout << T->data << "->";
+		cout << T->val << "->";
 		if (PreOrderTraverse(T->lchild))
 			if (PreOrderTraverse(T->rchild))
 				return (OK);
@@ -53,7 +53,7 @@ int InOrderTraverse(BiTree T) //中序遍历递归法
 	{
 		if (InOrderTraverse(T->lchild))
 		{
-			cout << T->data << "->";
+			cout << T->val << "->";
 			if (InOrderTraverse(T->rchild))
 				return (OK);
 		}
@@ -70,7 +70,7 @@ int PostOrderTraverse(BiTree T) //后序遍历递归法
 		if (PostOrderTraverse(T->lchild))
 			if (PostOrderTraverse(T->rchild))
 			{
-				cout << T->data << "->";
+				cout << T->val << "->";
 				return (OK);
 			}
 		return (ERROR);
@@ -92,7 +92,7 @@ int InOrderTraverse_nonRecursive(BiTree T)//非递归中序遍历二叉树
 		{
 			p = s.top();//获取
 			s.pop();//删除
-			cout << p->data << "->";//访问
+			cout << p->val << "->";//访问
 			s.push(p->rchild);//右孩子进栈
 		}
 	}

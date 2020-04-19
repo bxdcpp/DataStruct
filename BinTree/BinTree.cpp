@@ -2,10 +2,10 @@
 #include <stdlib.h>
 typedef char TElemType;
 typedef int  status;
-typedef struct BiTNode
+typedef struct TreeNode
 {
-	TElemType data;
-	struct BiTNode* Right, * Left;
+	TElemType val;
+	struct TreeNode* right, * left;
 
 }BiTNode, * BiTree;
 
@@ -22,10 +22,10 @@ BiTree buildBiTree(TElemType a[], int i)
 		return NULL;
 	else
 	{
-		p = new BiTNode;
-		p->data = a[i];
-		p->Left = buildBiTree(a, 2 * i);
-		p->Right = buildBiTree(a, 2 * i + 1);
+		p = new TreeNode;
+		p->val = a[i];
+		p->left = buildBiTree(a, 2 * i);
+		p->right = buildBiTree(a, 2 * i + 1);
 
 		return p;
 	}
@@ -36,19 +36,19 @@ status	rootLeftRight(BiTree root)//1
 {
 	if (root == NULL)
 		return -1;
-	printf("%c", root->data);
-	rootLeftRight(root->Left);
-	rootLeftRight(root->Right);
+	printf("%c", root->val);
+	rootLeftRight(root->left);
+	rootLeftRight(root->right);
 }
 
 status	rootRightLeft(BiTree root)//2
 {
 	if (root == NULL)
 		return -1;
-	printf("%c", root->data);
+	printf("%c", root->val);
 
-	rootRightLeft(root->Right);
-	rootRightLeft(root->Left);
+	rootRightLeft(root->right);
+	rootRightLeft(root->left);
 }
 
 status	leftRightRoot(BiTree root)//3
@@ -56,9 +56,9 @@ status	leftRightRoot(BiTree root)//3
 	if (root == NULL)
 		return -1;
 
-	leftRightRoot(root->Left);
-	leftRightRoot(root->Right);
-	printf("%c", root->data);
+	leftRightRoot(root->left);
+	leftRightRoot(root->right);
+	printf("%c", root->val);
 	return 0;
 
 
@@ -68,18 +68,18 @@ status	leftRightRoot(BiTree root)//3
 
 	if (root == NULL)
 		return -1;
-	rightLeftRoot(root->Right);
-	rightLeftRoot(root->Left);
-	printf("%c", root->data);
+	rightLeftRoot(root->right);
+	rightLeftRoot(root->left);
+	printf("%c", root->val);
 	return 0;
 }
 
 void deltree(BiTree root)
 {//查找到后后序遍历方式删除其子树及本身
-	if (!root->Left)
-		deltree(root->Left);
-	if (!root->Right)
-		deltree(root->Right);
+	if (!root->left)
+		deltree(root->left);
+	if (!root->right)
+		deltree(root->right);
 	delete(root);
 }
 
@@ -87,8 +87,8 @@ status deleteBiTree(BiTree root)
 {
 	if (root)
 	{
-		deleteBiTree(root->Left);
-		deleteBiTree(root->Right);
+		deleteBiTree(root->left);
+		deleteBiTree(root->right);
 		delete(root);
 	}
 

@@ -9,10 +9,10 @@
 using namespace std;
 typedef char TElemType;
 typedef int  status;
-typedef struct BiTNode
+typedef struct TreeNode
 {
-	TElemType data;
-	struct BiTNode* Right, * Left;
+	TElemType val;
+	struct TreeNode* right, * left;
 
 }BiTNode, * BiTree;
 
@@ -63,10 +63,10 @@ BiTree buildBiTree(TElemType a[], int i)
 		return NULL;
 	else
 	{
-		p = new BiTNode;
-		p->data = a[i];
-		p->Left = buildBiTree(a, 2 * i);
-		p->Right = buildBiTree(a, 2 * i + 1);
+		p = new TreeNode;
+		p->val = a[i];
+		p->left = buildBiTree(a, 2 * i);
+		p->right = buildBiTree(a, 2 * i + 1);
 
 		return p;
 	}
@@ -84,11 +84,11 @@ void level(BiTree root)
 	while (Q.rear != Q.front)
 	{
 		GetQueue(Q, bb);
-		printf("%c", bb->data);
-		if (bb->Left)
-			EnQueue(Q, bb->Left);
-		if (bb->Right)
-			EnQueue(Q, bb->Right);
+		printf("%c", bb->val);
+		if (bb->left)
+			EnQueue(Q, bb->left);
+		if (bb->right)
+			EnQueue(Q, bb->right);
 	}
 
 
@@ -103,7 +103,7 @@ int count(BiTree root)
 	if (root == NULL)
 		return 0;
 	else
-		counts = 1 + count(root->Left) + count(root->Right);
+		counts = 1 + count(root->left) + count(root->right);
 	return counts;
 }
 
@@ -111,8 +111,8 @@ status deleteBiTree(BiTree root)
 {
 	if (root)
 	{
-		deleteBiTree(root->Left);
-		deleteBiTree(root->Right);
+		deleteBiTree(root->left);
+		deleteBiTree(root->right);
 		delete(root);
 	}
 
@@ -126,8 +126,8 @@ status du(BiTree root)
 		return 0;
 	if (root)
 	{
-		t = du(root->Left);
-		n = du(root->Right);
+		t = du(root->left);
+		n = du(root->right);
 		max = t;
 		if (n > max)
 			max = n;
@@ -143,14 +143,14 @@ int InOrderTraverse_nonRecursive(BiTree T)//非递归中序遍历二叉树
 	s.push(T);//根节点进站
 	while (!s.empty())
 	{
-		while (p = s.top()) s.push(p->Left);//栈顶不为空，则左孩子进栈
+		while (p = s.top()) s.push(p->left);//栈顶不为空，则左孩子进栈
 		s.pop();//左孩子结点为空，必须把空指针弹出来
 		if (!s.empty())//弹出后，栈仍然不为空，则表明有根结点需要访问
 		{
 			p = s.top();//获取
 			s.pop();//删除
-			cout << p->data << "->";//访问
-			s.push(p->Right);//右孩子进栈
+			cout << p->val << "->";//访问
+			s.push(p->right);//右孩子进栈
 		}
 	}
 	return OK;
