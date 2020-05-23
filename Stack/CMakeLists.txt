@@ -4,6 +4,7 @@ project(stack-examples)
 #aux_source_directory(. single_file_examples)	
 set(single_file_examples
 	BaseConversion
+	KMPalgorithm
   )
 
 foreach(example ${single_file_examples})
