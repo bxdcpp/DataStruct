@@ -48,7 +48,7 @@ typedef struct SqStack
 
 //-----------单链队列-------
 typedef int QElemType;
-typedf struct QNode
+typedef struct QNode
 {
 	QElemType data;
 
@@ -72,7 +72,7 @@ typedef struct SqQueue
 
 //-------二叉树链表存储表示------
 typedef int TElemType;
-typdef struct BiTNode
+typedef struct BiTNode
 {
 	TElemType data;
 	struct BiTNode* lchild, * rchild;
