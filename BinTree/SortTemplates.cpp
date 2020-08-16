@@ -87,6 +87,23 @@ void print(int array[],int n)
 	std::cout << std::endl;
 }
 
+
+int Paritition(int A[], int low, int high) {
+	int pivot = A[high];
+	int i = low - 1;
+	for (int j = low; j < high; j++)
+	{
+		if (A[j] <= pivot)
+		{
+			i = i + 1;
+			swap(&A[i], &A[j]);
+		}
+	}
+	swap(&A[i + 1], &A[high]);
+
+	return i + 1;
+}
+
 ///快排
 ///从数列中挑出一个元素，称为 "基准"（pivot）;
 ///重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）.
@@ -111,7 +128,7 @@ int Paritition1(int A[], int low, int high) {
 void QuickSort(int A[], int low, int high) //快排母函数
 {
 	if (low < high) {
-		int pivot = Paritition1(A, low, high);
+		int pivot = Paritition(A, low, high);
 		QuickSort(A, low, pivot - 1);
 		QuickSort(A, pivot + 1, high);
 	}
@@ -154,10 +171,10 @@ int main()
 	//bubbleSort(v);
 	//SelectionSort(v);
 	//InsertSort(v);
-	/*QuickSort(array, 0, 9);
-	print(array,10);*/
-	QuickSort2(v, 0, 9);
-	print(v);
+	QuickSort(array, 0, 9);
+	print(array,10);
+	/*QuickSort2(v, 0, 9);
+	print(v);*/
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
