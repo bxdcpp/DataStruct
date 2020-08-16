@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stack>
 #include <iostream>
+#include <queue>
+
 #define ERROR -1;
 #define OK 0;
 #define MAXQSIZE 100
@@ -93,6 +95,25 @@ void level(BiTree root)
 
 
 
+}
+
+int bfs(BiTree root) {
+	queue<BiTree> q;
+	int depth = 0;
+	if (root == NULL)
+		return 0;
+	q.push(root);
+	while (!q.empty())
+	{
+		BiTree tree = q.front();
+		q.pop();
+		depth++;
+		if (tree->left)
+			q.push(tree->left);
+		if (tree->right)
+			q.push(tree->right);
+	}
+	return depth;
 }
 
 int counts = 0;
