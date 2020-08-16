@@ -43,6 +43,7 @@ NODE* createlink()
 	return head;
 }
 
+//pre->cur->next
 NODE* reverse(NODE* head)
 {
 	NODE* p, * q, * t;
@@ -50,13 +51,13 @@ NODE* reverse(NODE* head)
 	q = q->next;
 	while (q != NULL)
 	{
-		t = q->next;//保存第二结点
-		q->next = p;//让第二个结点指向上一个结构体（正序是指向下一个的，也就是第三个）
+		t = q->next;//保存第二结点 //next
+		q->next = p;//让第二个结点指向上一个结构体（正序是指向下一个的，也就是第三个）//cur->next = pre
 		//第一个元素指向空，变成最后一个
 		if (p == head)
 			p->next = NULL;
-		p = q;//q=q->next,所以q是第二个结构指针，所以意思为把第二个传给第一个
-		q = t;//t是第三个结构体的内容给第二个
+		p = q;//q=q->next,所以q是第二个结构指针，所以意思为把第二个传给第一个//pre = cur
+		q = t;//t是第三个结构体的内容给第二个//cur = cur->next
 	}
 	head = p;//循环后p就是最后一个结点让最后一个结点成为第一个节点。
 	return head;
