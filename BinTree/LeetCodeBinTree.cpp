@@ -1,8 +1,10 @@
 #include"LeetCodeBinTree.h"
 #include <iostream>
+#include <algorithm>
 #include <queue>
 #include <stack>
 
+using namespace std;
 BiTree buildBiTree(TElemType a[], int i)
 {
 	BiTree p;
@@ -212,6 +214,109 @@ bool isSubtree_me(TreeNode* s, TreeNode* t)
 	return isSubtree_me(s->left, t) || isSubtree_me(s->right, t);
 }
 
+void find(TreeNode* root, std::vector<int>& v2, std::vector<int>& v3)
+{
+	if (!root) return;
+	if (root && root->left && root->right && (root->val == root->left->val == root->right->val))
+		v3.push_back(root->val);
+	if ((root && root->left && !root->right && (root->val == root->left->val)) || (root && !root->left && root->right && (root->val == root->right->val)) || ((root && root->left && root->right) &&(root->val == root->left->val || root->val == root->right->val)))
+		v2.push_back(root->val);
+	find(root->left, v2, v3);
+	find(root->right, v2, v3);
+}
+
+std::vector<int> findMode(TreeNode* root)
+{
+	std::vector<int> numoftwo;
+	std::vector<int> numofthree;
+	//if (!root) return
+	if (root && !root->left && !root->right)
+		numoftwo.push_back(root->val);
+	find(root, numoftwo, numofthree);
+	if (numofthree.size() >= 1)
+		return numofthree;
+	else
+		return numoftwo;
+}
+
+int rob(vector<int>& nums) {
+	int n = nums.size();
+	vector<int> dp(n + 1,-1);
+
+	if (nums.size() == 1)
+		return nums[0];
+	dp[1] = nums[0];
+	dp[2] = max(nums[0], nums[1]);
+
+	for (int i = 2; i < n; i++)
+	{
+		dp[i+1] = max(dp[i - 1] + nums[i], dp[i]);
+	}
+	return dp[n];
+
+}
+int* dp(TreeNode* root);
+//每个节点可选择偷或者不偷两种状态，根据题目意思，相连节点不能一起偷
+//
+//当前节点选择偷时，那么两个孩子节点就不能选择偷了
+//当前节点选择不偷时，两个孩子节点只需要拿最多的钱出来就行(两个孩子节点偷不偷没关系)
+//我们使用一个大小为 2 的数组来表示 int[] res = new int[2] 0 代表不偷，1 代表偷
+//任何一个节点能偷到的最大钱的状态可以定义为
+//
+//当前节点选择不偷：当前节点能偷到的最大钱数 = 左孩子能偷到的钱 + 右孩子能偷到的钱
+//当前节点选择偷：当前节点能偷到的最大钱数 = 左孩子选择自己不偷时能得到的钱 + 右孩子选择不偷时能得到的钱 + 当前节点的钱数
+//表示为公式如下
+//
+//
+//root[0] = Math.max(rob(root.left)[0], rob(root.left)[1]) + Math.max(rob(root.right)[0], rob(root.right)[1])
+//root[1] = rob(root.left)[0] + rob(root.right)[0] + root.val;
+//
+//
+//作者：reals
+//链接：https ://leetcode-cn.com/problems/house-robber-iii/solution/san-chong-fang-fa-jie-jue-shu-xing-dong-tai-gui-hu/
+//来源：力扣（LeetCode）
+//著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+//int rob3(TreeNode* root) {
+//	int* res = dp(root);
+//	return max(res[0], res[1]);
+//}
+//
+///* 返回一个大小为 2 的数组 arr
+//arr[0] 表示不抢 root 的话，得到的最大钱数
+//arr[1] 表示抢 root 的话，得到的最大钱数 */
+//int* dp(TreeNode* root) {
+//	if (root == nullptr)
+//		return new int[2]{0,0};
+//	int* left = dp(root->left);
+//	int* right = dp(root->right);
+//	// 抢，下家就不能抢了
+//	int rob = root->val + left[0] + right[0];
+//	// 不抢，下家可抢可不抢，取决于收益大小
+//	int not_rob = max(left[0], left[1])
+//		+ max(right[0], right[1]);
+//	return new int[2] {not_rob, rob};
+//}
+
+
+vector<vector<int>> merge(vector<vector<int>>& intervals) {
+	if (intervals.size() == 0) {
+		return {};
+	}
+	sort(intervals.begin(), intervals.end());
+	vector<vector<int>> merged;
+	for (int i = 0; i < intervals.size(); ++i) {
+		std::cout << i << ":" << intervals[i][0] << std::endl;
+		int L = intervals[i][0], R = intervals[i][1];
+		if (!merged.size() || merged.back()[1] < L) {
+			merged.push_back({ L, R });
+		}
+		else {
+			merged.back()[1] = max(merged.back()[1], R);
+		}
+	}
+	return merged;
+}
+
 void menu()
 {
 	std::cout << " " << std::endl;
@@ -220,6 +325,13 @@ void menu()
 
 int main()
 {
+	
+	vector<int> a1{ 0,1 };
+	vector<int> a2{ 4,8 };
+	vector<int> a3{ 0,3 };
+	vector<int> a4{1,2};
+	vector<vector<int>> n{ a1,a2,a3,a4 };
+	merge(n);
 	TreeNode* root;
 	// 从数组a的下标1开始创建二叉树
 	root = buildBiTree(a, 1);
