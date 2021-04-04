@@ -4,6 +4,10 @@
 #include <iostream>
 #include <vector>
 
+
+int Paritition(int A[], int low, int high);//快排子函数
+int Paritition1(int A[], int low, int high);
+
 std::vector<int> v({ 8,9,1,5,7,18,2,4,3,10 });
 
 int array[] = { 8,9,1,5,7,18,2,4,3,10 };
@@ -129,6 +133,7 @@ void QuickSort(int A[], int low, int high) //快排母函数
 {
 	if (low < high) {
 		int pivot = Paritition(A, low, high);
+		print(array, 10);
 		QuickSort(A, low, pivot - 1);
 		QuickSort(A, pivot + 1, high);
 	}
@@ -159,9 +164,47 @@ void QuickSort2(std::vector<int>& a, int low, int high)
 	if (low < high)
 	{
 		int pivot = Paritition2(a, low, high);
+		print(a);
 		QuickSort2(a, low, pivot - 1);
 		QuickSort2(a, pivot + 1, high);
 	}
+}
+
+void merge(std::vector<int>& nums, int start, int mid, int end)
+{
+	std::vector<int> leftArray(nums.begin() + start, nums.begin() + mid + 1);
+	std::vector<int> rightArray(nums.begin() + mid + 1, nums.begin() + end + 1);
+	//插入最大值为了比较
+	leftArray.insert(leftArray.end(), std::numeric_limits<int>::max());
+	rightArray.insert(rightArray.end(), std::numeric_limits<int>::max());
+	int leftIndex = 0;
+	int rightIndex = 0;
+	for (int i = start; i < end; i++)
+	{
+		if (rightArray[rightIndex] > leftArray[leftIndex]) {
+			nums[i] = leftArray[leftIndex];
+			leftIndex++;
+		}
+		else
+		{
+			nums[i] = rightArray[rightIndex];
+			rightIndex++;
+		}
+	}
+}
+
+void mergeSort(std::vector<int>& nums,int start,int end )
+{
+	
+	if (start < end)
+	{
+		//int mid = start + (end - start) / 2;
+		int mid = (start + end) / 2;
+		mergeSort(nums,start,mid );
+		mergeSort(nums, mid + 1, end);
+		merge(nums, start, mid, end);
+	}
+
 }
 
 
@@ -171,10 +214,14 @@ int main()
 	//bubbleSort(v);
 	//SelectionSort(v);
 	//InsertSort(v);
-	QuickSort(array, 0, 9);
-	print(array,10);
-	/*QuickSort2(v, 0, 9);
-	print(v);*/
+	//print(array, 10);
+	//QuickSort(array, 0, 9);
+	//print(array,10);
+	//print(v);
+	//QuickSort2(v, 0, 9);
+	//print(v);
+	mergeSort(v, 0, 9);
+	print(v);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
