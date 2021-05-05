@@ -5,29 +5,52 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <stack>
+#include <time.h>
 
-#define _aaaaa
+using namespace std;
 
-int Paritition(int A[], int low, int high);//快排子函数
-int Paritition1(int A[], int low, int high);
-
-std::vector<int> v({ 8,9,1,5,7,18,2,4,3,10 });
-
-int array[] = { 8,9,1,5,7,18,2,4,3,10 };
-void swap(int* a, int* b)
+void Hint()
 {
-	int temp;
-	temp = *a;
-	*a = *b;
-	*b = temp;
+	std::cout << "----------请输入相应的数字选择排序方法----------" << std::endl;
+	std::cout << "-----------------1 冒泡排序---------------------" << std::endl;
+	std::cout << "-----------------2 选择排序---------------------" << std::endl;
+	std::cout << "-----------------3 插入排序---------------------" << std::endl;
+	std::cout << "-----------------4 希尔排序---------------------" << std::endl;
+	std::cout << "-----------------5 归并排序---------------------" << std::endl;
+	std::cout << "-----------------55 归并排序(递归)--------------" << std::endl;
+	std::cout << "-----------------6 快速排序---------------------" << std::endl;
+	std::cout << "-----------------66 快速排序(递归)--------------" << std::endl;
+	std::cout << "-----------------7 堆排序-----------------------" << std::endl;
+	std::cout << "-----------------8 计数排序---------------------" << std::endl;
+	std::cout << "-----------------9 桶排序-----------------------" << std::endl;
+	std::cout << "-----------------10 基数排序--------------------" << std::endl;
 }
 
-void bubbleSort(std::vector<int>& array)
+void PrintVector(std::vector<int>& a)
+{
+	std::for_each(a.begin(), a.end(), [](const int v)->void {std::cout << v << " "; });
+	std::cout << std::endl;
+}
+
+void BuildArray(std::vector<int>& array, int size = 20)
+{
+	srand(time(NULL));
+	for (int i = 0; i < size; i++)
+	{
+		array.push_back(rand() % 100);
+	}
+	std::cout << "随机生成数组如下" << std::endl;
+	PrintVector(array);
+}
+/*-----------------------O(n*n)--------------------------------*/
+/*-------------------------------------------------------------*/
+void BubbleSort(std::vector<int>& array)
 {
 	int n = (int)array.size();
 	int tmp = 0;
 	int i, j;
-	for (i = 0; i < n; i++)
+	for (i = 0; i < n - 1; i++)
 	{
 		for (j = 0; j < n - i - 1; j++)
 		{
@@ -43,7 +66,7 @@ void bubbleSort(std::vector<int>& array)
 
 void SelectionSort(std::vector<int>& array)
 {
-	int min  = 0;
+	int min = 0;
 	int n = (int)array.size();
 	for (int i = 0; i < n; i++)
 	{
@@ -53,7 +76,7 @@ void SelectionSort(std::vector<int>& array)
 			if (array[j] < array[min])
 				min = j;
 		}
-		swap(&array[i], &array[min]);
+		std::swap(array[i], array[min]);
 	}
 
 }
@@ -66,35 +89,132 @@ void InsertSort(std::vector<int>& array)
 	{
 		int current = array[i];
 		j = i - 1;
+		//从排序好的数据尾部向前比较
+		//如果待插入数据小于已经排序的当前下表的数据，数据后移
 		while (j >= 0 && current < array[j])
 		{
-			array[j + 1] = array[j];
-			j--;
+			array[j + 1] = array[j];//之前往后覆盖
+			j--;//向前移动
 		}
-		array[j + 1] = current;
+		array[j + 1] = current;//找到位置，插入数据
 	}
 }
 
-void print(std::vector<int>& array)
+/*-----------------------堆排序------------------------------------
+* 1.最小堆:任何一个父节点的值，都小于等于它左右孩子节点的值。
+* 2.最大堆:任何一个父节点的值，都大于等于它左右孩子节点的值。
+*1.插入节点
+*	1.1插入的是完全二叉树的最后一个叶子节点
+*	1.2和父节点比较 上浮
+*2.删除节点
+*	2.1二叉堆的节点删除过程和插入过程正好相反，所删除的是处于堆顶的节点
+*	2.2把最后一个叶子节点放到堆顶
+*	2.3和子节点比较 下沉
+* 3.构建二叉堆
+*	本质是让所有的非叶子节点下沉
+*
+* 父节点： i
+* 左孩子: 2*i+1
+* 右孩子：2*i+2
+*
+* 对于一个索引下标 i
+* parent: i/2
+* leftChild:2*i
+* rightChild:2*i+1
+*
+*-----------------------------------------------------------------*/
+/**
+ * 上浮调整
+ * @param array     待调整的堆
+ * 上浮 是对最后一个叶子节点的操作
+ */
+void upAjust(vector<int>& array)
 {
-	int n = (int)array.size();
-	for (int i = 0; i < n; i++)
+	int childIndex = array.size() - 1;
+	int parentIndex = (childIndex - 1) / 2;
+	// temp保存插入的叶子节点值，用于最后的赋值
+	int temp = array[childIndex];
+	while (childIndex > 0 && temp < array[parentIndex])
 	{
-		std::cout << array[i] << " ";
+		//无需真正交换，单向赋值即可
+		array[childIndex] = array[parentIndex];
+		childIndex = parentIndex;
+		parentIndex = (childIndex - 1) / 2;
 	}
-	std::cout << std::endl;
+	array[childIndex] = temp;
 }
-
-void print(int array[],int n)
+/**
+ * 下沉调整
+ * @param array     待调整的堆
+ * @param parentIndex    要下沉的父节点
+ * @param length    堆的有效大小(长度)
+ */
+void downAjust(std::vector<int>& array, int parentIndex, int length)
 {
-	for (int i = 0; i < n; i++)
+	// temp保存父节点值，用于最后的赋值
+	int temp = array[parentIndex];
+	int leftChildIndex = 2 * parentIndex + 1;
+	while (leftChildIndex < length)
 	{
-		std::cout << array[i] << " ";
+		int rightChildIndex = leftChildIndex + 1;
+		int minChildIndex = leftChildIndex;
+		//如果有右孩子且右孩子比左孩子小
+		if (rightChildIndex < length && array[rightChildIndex] < array[leftChildIndex])
+		{
+			minChildIndex = rightChildIndex;
+		}
+		//如果父节点小于任何一个孩子的值，直接跳出
+		if (temp < array[minChildIndex])
+			break;
+		//无需真正的交换，单项赋值
+		array[parentIndex] = array[minChildIndex];
+		parentIndex = minChildIndex;
+		leftChildIndex = parentIndex * 2 + 1;
 	}
-	std::cout << std::endl;
+	array[parentIndex] = temp;
 }
 
+/**
+ * 构建堆
+ * @param array     待调整的堆
+ *
+ *
+ */
+void BuildHeap(std::vector<int>& array)
+{
+	// 从最后一个非叶子节点开始，依次下沉调整
+	int n = array.size();
+	for (int i = (n - 2) / 2; i >= 0; i--)
+		downAjust(array, i, array.size());
 
+	std::cout << "二叉堆:";
+	PrintVector(array);
+}
+
+/**
+ * 堆排序
+ * @param array     待调整的堆
+ */
+void HeapSort(std::vector<int>& array)
+{
+	//1.把无序数组构建成二叉堆。
+	BuildHeap(array);
+
+	//2.循环删除堆顶元素，移到集合尾部，调节堆产生新的堆顶。
+	int length = array.size();
+	for (int i = length - 1; i > 0; i--)
+	{
+		int temp = array[i];
+		array[i] = array[0];
+		array[0] = temp;
+
+		//下沉调整
+		downAjust(array, 0, i);
+		PrintVector(array);
+	}
+}
+
+/*-----------------------快排--------------------------------*/
 int Paritition(int A[], int low, int high) {
 	int pivot = A[high];
 	int i = low - 1;
@@ -103,10 +223,10 @@ int Paritition(int A[], int low, int high) {
 		if (A[j] <= pivot)
 		{
 			i = i + 1;
-			swap(&A[i], &A[j]);
+			std::swap(A[i], A[j]);
 		}
 	}
-	swap(&A[i + 1], &A[high]);
+	std::swap(A[i + 1], A[high]);
 
 	return i + 1;
 }
@@ -136,7 +256,6 @@ void QuickSort(int A[], int low, int high) //快排母函数
 {
 	if (low < high) {
 		int pivot = Paritition(A, low, high);
-		print(array, 10);
 		QuickSort(A, low, pivot - 1);
 		QuickSort(A, pivot + 1, high);
 	}
@@ -162,17 +281,46 @@ int Paritition2(std::vector<int>& a, int low, int high)
 	return low;
 }
 
-void QuickSort2(std::vector<int>& a, int low, int high)
+//Warnning low:容器的首地址 high:容器的末尾地址
+void QuickSort_Recursion(std::vector<int>& a, int low, int high)
 {
 	if (low < high)
 	{
 		int pivot = Paritition2(a, low, high);
-		print(a);
-		QuickSort2(a, low, pivot - 1);
-		QuickSort2(a, pivot + 1, high);
+		std::cout << "pivot:" << pivot << std::endl;
+		PrintVector(a);
+		QuickSort_Recursion(a, low, pivot - 1);
+		QuickSort_Recursion(a, pivot + 1, high);
 	}
 }
 
+void QuickSort(std::vector<int>& array, int low, int high)
+{
+	stack<int> s;
+	s.push(low);
+	s.push(high);
+	while (!s.empty())
+	{
+		int high = s.top();
+		s.pop();
+		int low = s.top();
+		s.pop();
+		int pivot = Paritition1(array.data(), low, high);
+
+		if (pivot - 1 > low)//左子序列
+		{
+			s.push(low);
+			s.push(pivot - 1);
+		}
+		if (pivot + 1 < high)//右子序列
+		{
+			s.push(pivot + 1);
+			s.push(high);
+		}
+	}
+}
+
+/*-------------------------归并排序-----------------------------------------*/
 void merge(std::vector<int>& nums, int start, int mid, int end)
 {
 	std::vector<int> leftArray(nums.begin() + start, nums.begin() + mid + 1);
@@ -196,19 +344,21 @@ void merge(std::vector<int>& nums, int start, int mid, int end)
 	}
 }
 
-void mergeSort(std::vector<int>& nums,int start,int end )
+//Warnning start:容器的首地址 end:容器的末尾地址
+void MergeSort_Recursion(std::vector<int>& nums, int start, int end)
 {
-	
+
 	if (start < end)
 	{
 		//int mid = start + (end - start) / 2;
 		int mid = (start + end) / 2;
-		mergeSort(nums,start,mid );
-		mergeSort(nums, mid + 1, end);
+		MergeSort_Recursion(nums, start, mid);
+		MergeSort_Recursion(nums, mid + 1, end);
 		merge(nums, start, mid, end);
 	}
 
 }
+
 //归并参考 https://blog.csdn.net/YF_Li123/article/details/75072991
 void mergeSort1(std::vector<int>& nums, int start, int end)
 {
@@ -229,10 +379,10 @@ void merge_sort(T arr[], int len) {
 	T* a = arr;
 	T* b = new T[len];
 	for (int seg = 1; seg < len; seg += seg) {//seg为左区间或者右区间一组数据元素的个数；eg:seg = 1 代表一组数据左边是1个右边也是1个数据
-		for (int start = 0; start < len; start += seg + seg) {//以seg+seg为一组 能分的组数，对每组进行排序
+		for (int start = 0; start < len; start += seg + seg) {//以seg+seg(左右)为一组归并 能分的组数，对每组进行排序
 			int low = start;//起始下标
-			int mid = std::min(start + seg, len);//左区间的最大下标+1
-			int high = std::min(start + seg + seg, len);//右区间的最大下标+1
+			int mid = std::min(start + seg, len);//左区间的最大下标不能比数组长度大
+			int high = std::min(start + seg + seg, len);//右区间的最大下标不能比数组长度大
 			int k = low;
 			int start1 = low, end1 = mid;
 			int start2 = mid, end2 = high;
@@ -243,36 +393,138 @@ void merge_sort(T arr[], int len) {
 			while (start2 < end2)
 				b[k++] = a[start2++];
 		}
+
 		T* temp = a;
 		a = b;
 		b = temp;
+		{
+			//debug
+			cout << "一组几个元素:" << seg << "----------";
+			for (T i = 0; i < len; i++)
+			{
+				cout << a[i] << " ";
+			}
+			cout << endl;
+		}
+
 	}
 	if (a != arr) {
 		for (int i = 0; i < len; i++)
 			b[i] = a[i];
 		b = a;
-		std::cout << "test!" << std::endl;
+		std::cout << "merge_sort  test!" << std::endl;
 	}
 	delete[] b;
 }
 
-
+/*----------------------main-------------------------------------------------*/
 int main()
 {
-    std::cout << "Hello World!\n";
-	//bubbleSort(v);
-	//SelectionSort(v);
-	//InsertSort(v);
-	//print(array, 10);
-	//QuickSort(array, 0, 9);
-	//print(array,10);
-	//print(v);
-	//QuickSort2(v, 0, 9);
-	//print(v);
-	/*mergeSort(v, 0, 9);
-	print(v);*/
+	Hint();
 
-	merge_sort<int>(array, 10);
-	print(array,10);
-	//std::map<int ,int>
+	char ch;
+	while (std::cin >> ch)
+	{
+		int switch_on = ch - '0';
+		switch (switch_on)
+		{
+		case 1:
+		{
+			std::vector<int> array;
+			std::cout << "开始排序" << std::endl;
+			BuildArray(array);
+			BubbleSort(array);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
+
+		case 2:
+
+		{
+			std::vector<int> array;
+			std::cout << "开始排序" << std::endl;
+			BuildArray(array);
+			SelectionSort(array);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+
+		break;
+		case 3:
+		{
+			std::vector<int> array;
+			std::cout << "开始排序" << std::endl;
+			BuildArray(array);
+			InsertSort(array);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
+		case 4:
+			break;
+		case 5:
+		{
+			std::vector<int> array;
+			std::cout << "开始归并排序" << std::endl;
+			BuildArray(array);
+			merge_sort<int>(array.data(), array.size());
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
+		case 55:
+		{
+			std::vector<int> array;
+			std::cout << "开始递归归并排序" << std::endl;
+			BuildArray(array);
+			MergeSort_Recursion(array, 0, array.size() - 1);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
+		case 6:
+		{
+			std::vector<int> array;
+			std::cout << "开始排序" << std::endl;
+			BuildArray(array);
+
+			QuickSort(array, 0, array.size() - 1);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
+		case 66:
+		{
+			std::vector<int> array;
+			std::cout << "开始递归快排" << std::endl;
+			BuildArray(array);
+
+			QuickSort_Recursion(array, 0, array.size() - 1);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
+
+		case 7:
+		{
+			std::vector<int> array;
+			BuildArray(array, 10);
+			std::cout << "堆排序" << std::endl;
+			//BuildHeap(array);
+			//upAjust(array);
+			HeapSort(array);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
+		case 8:
+			break;
+		case 9:
+			break;
+		default:
+			break;
+		}
+	}
+	return 0;
 }
