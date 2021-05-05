@@ -2,9 +2,10 @@
 //
 
 #include <iostream>
-#include <vector>
-#include <map>
+#include <iterator>
+#include <functional>
 #include <algorithm>
+#include <vector>
 #include <stack>
 #include <time.h>
 
@@ -100,6 +101,27 @@ void InsertSort(std::vector<int>& array)
 	}
 }
 
+void ShellSort(std::vector<int>& array)
+{
+	int len = array.size();
+	if (len <= 1) { return; }
+	for (int step = len / 2; step >= 1; step /= 2) {
+		for (int x = 0; x < step; x++)
+		{
+			for (int i = x + step; i < len; i += step)
+			{
+				int temp = array[i];
+				int j = 0;
+				for (j = i - step; j >= 0 && array[j] > temp; j = j - step)
+				{
+					array[j + step] = array[j];
+				}
+				array[j + step] = temp;
+			}
+		}
+	}
+}
+
 /*-----------------------堆排序------------------------------------
 * 1.最小堆:任何一个父节点的值，都小于等于它左右孩子节点的值。
 * 2.最大堆:任何一个父节点的值，都大于等于它左右孩子节点的值。
@@ -143,6 +165,7 @@ void upAjust(vector<int>& array)
 	}
 	array[childIndex] = temp;
 }
+
 /**
  * 下沉调整
  * @param array     待调整的堆
@@ -417,11 +440,79 @@ void merge_sort(T arr[], int len) {
 	delete[] b;
 }
 
+/*----------------------bucketSort-------------------------------------------------*/
+
+void  BucketSort(std::vector<int>& array,int bucketSize = 1)
+{
+	//1.得到数列的最大值和最小值，并算出差值range
+	const int min = *std::min_element(array.begin(), array.end());
+	const int max = *std::max_element(array.begin(), array.end());
+	int range = max + 1 - min;
+	const int  bucket_num = (range - 1) / bucketSize + 1;
+	
+	//初始化桶
+	std::vector<std::vector<int>>buckets(bucket_num);
+	for (auto it : buckets)
+	{
+		it.reserve((size_t)2 * bucketSize);
+	}
+	for (auto v : array)
+	{
+		size_t id = (v - min) / bucketSize;
+		buckets[id].emplace_back(v);
+	}
+	//排序
+	auto dest = array.begin();
+	for (auto b : buckets)
+	{
+		std::sort(b.begin(), b.end(),std::less<int>());
+		std::copy(b.begin(), b.end(), dest);
+		dest += b.size();
+
+	}
+	return;
+}
+
+/*----------------------CountSort-------------------------------------------------*/
+void CountSort(std::vector<int>& array)
+{
+	//1.得到数列的最大值和最小值，并算出差值range
+	const int min = *std::min_element(array.begin(), array.end());
+	const int max = *std::max_element(array.begin(), array.end());
+	int range = max + 1 - min;
+	//2.创建计数数组并统计对应元素的个数
+	std::vector<int>counter(range);//计数数组
+	for (auto& it : array)
+	{
+		counter[(size_t)it - min]++;//对应下表 it-min
+	}
+	//3.统计数组做变形，后面的元素等于前面的元素之和
+	/*int sum = 0;
+	for (size_t i = 0; i < range; i++)
+	{
+		sum += counter[i];
+		counter[i] = sum;
+	}*/
+
+	//3.1统计数组做变形，前面的元素等于后面的元素之和
+	for (size_t i = 1; i != range; ++i) {
+		const size_t j = range - i - 1;
+		counter[j] += counter[j + 1];  
+	}
+
+	size_t len = array.size();
+	std::vector<int> temp(len);
+	for (auto it : array)
+	{
+		temp[len - counter[(size_t)it - min]] = it;
+		--counter[(size_t)it - min];
+	}
+	std::copy(temp.begin(), temp.end(), array.begin());
+}
 /*----------------------main-------------------------------------------------*/
 int main()
 {
 	Hint();
-
 	char ch;
 	while (std::cin >> ch)
 	{
@@ -462,7 +553,15 @@ int main()
 		}
 		break;
 		case 4:
-			break;
+		{
+			std::vector<int> array;
+			std::cout << "开始排序" << std::endl;
+			BuildArray(array);
+			ShellSort(array);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
+		break;
 		case 5:
 		{
 			std::vector<int> array;
@@ -518,10 +617,35 @@ int main()
 			PrintVector(array);
 		}
 		break;
+		
 		case 8:
+		{
+			std::vector<int> array;
+			BuildArray(array, 10);
+			std::cout << "计数排序" << std::endl;
+
+			CountSort(array);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
 			break;
 		case 9:
+		{
+			std::vector<int> array;
+			BuildArray(array);
+			std::cout << "桶排序" << std::endl;
+			//BuildHeap(array);
+			//upAjust(array);
+			BucketSort(array,1);
+			std::cout << "排序结果" << std::endl;
+			PrintVector(array);
+		}
 			break;
+		case 10:
+		{
+
+		}
+		break;
 		default:
 			break;
 		}
