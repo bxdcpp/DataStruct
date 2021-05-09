@@ -46,14 +46,16 @@ void BuildArray(std::vector<int>& array, int size = 20)
 }
 /*-----------------------O(n*n)--------------------------------*/
 /*-------------------------------------------------------------*/
+//通过两两比较交换位置
+//冒出的数据放在数组的后面
 void BubbleSort(std::vector<int>& array)
 {
 	int n = (int)array.size();
 	int tmp = 0;
 	int i, j;
-	for (i = 0; i < n - 1; i++)
+	for (i = 0; i < n - 1; i++)//排序的趟数
 	{
-		for (j = 0; j < n - i - 1; j++)
+		for (j = 0; j < n - i - 1; j++)//需要比较的次数
 		{
 			if (array[j] < array[j + 1])
 			{
@@ -101,18 +103,34 @@ void InsertSort(std::vector<int>& array)
 	}
 }
 
+
+void InsertSort2(vector<int>& array)
+{
+	int n = (int)array.size();
+	for (int i = 1; i < n; i++)
+	{
+		int current = array[i];
+		int j = i - 1;
+		for (; j >= 0 && current < array[j];j--)
+		{
+			array[j + 1] = array[j];//之前往后覆盖
+		}
+		array[j + 1] = current;
+	}
+}
+
 void ShellSort(std::vector<int>& array)
 {
 	int len = array.size();
 	if (len <= 1) { return; }
-	for (int step = len / 2; step >= 1; step /= 2) {
-		for (int x = 0; x < step; x++)
+	for (int step = len / 2; step >= 1; step /= 2) {//步长
+		for (int x = 0; x < step; x++)//遍历组
 		{
-			for (int i = x + step; i < len; i += step)
+			for (int i = x + step; i < len; i += step)//遍历一组数据
 			{
 				int temp = array[i];
 				int j = 0;
-				for (j = i - step; j >= 0 && array[j] > temp; j = j - step)
+				for (j = i - step; j >= 0 && array[j] > temp; j = j - step)//比较移动
 				{
 					array[j + step] = array[j];
 				}
@@ -547,7 +565,8 @@ int main()
 			std::vector<int> array;
 			std::cout << "开始排序" << std::endl;
 			BuildArray(array);
-			InsertSort(array);
+			//InsertSort(array);
+			InsertSort2(array);
 			std::cout << "排序结果" << std::endl;
 			PrintVector(array);
 		}
@@ -563,7 +582,7 @@ int main()
 		}
 		break;
 		case 5:
-		{
+		{                                                                   
 			std::vector<int> array;
 			std::cout << "开始归并排序" << std::endl;
 			BuildArray(array);
