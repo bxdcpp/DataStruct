@@ -5,6 +5,7 @@ add_subdirectory(Linkedlist/SingleLinkedlist)
 add_subdirectory(Stack)	
 add_subdirectory(BinTree)
 add_subdirectory(DFS)
-add_subdirectory(BFS)		
+add_subdirectory(BFS)
+add_subdirectory(CPlusBase)		
 
 
