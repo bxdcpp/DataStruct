@@ -1,5 +1,8 @@
 #include<stdio.h>
 #include <stdlib.h>
+#include <vector>
+#include <iostream>
+#include <algorithm>
 typedef char TElemType;
 typedef int  status;
 typedef struct TreeNode
@@ -118,6 +121,8 @@ return 0;
 
 void main()
 {
+	std::vector<int> v = { 1,2,3,4,5,9 };
+	std::cout << *max_element(v.begin(), v.end()) << std::endl;
 	BiTree root;
 	// 从数组a的下标1开始创建二叉树
 	root = buildBiTree(a, 1);
