@@ -153,10 +153,12 @@ void ShellSort(std::vector<int>& array)
 * 3.构建二叉堆
 *	本质是让所有的非叶子节点下沉
 *
+* 下表从0开始
 * 父节点： i
 * 左孩子: 2*i+1
 * 右孩子：2*i+2
 *
+* 小标从1开始
 * 对于一个索引下标 i
 * parent: i/2
 * leftChild:2*i
