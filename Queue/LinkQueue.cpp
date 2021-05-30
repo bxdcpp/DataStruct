@@ -17,7 +17,6 @@ typedef struct
 	QueuePtr rear;
 }LinkQueue;
 
-
 status InitQueue(LinkQueue& Q)//建立单链队列
 {
 	//	LinkQueue q;
