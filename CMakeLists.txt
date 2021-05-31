@@ -8,5 +8,4 @@ add_subdirectory(BinTree)
 add_subdirectory(DFS)
 add_subdirectory(BFS)
 add_subdirectory(CPlusBase)		
-
-
+add_subdirectory(Graph)
