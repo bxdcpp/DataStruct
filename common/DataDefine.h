@@ -107,5 +107,41 @@ typedef struct {
 	GraphKind kind;     //图的种类
 } MGraph;
 
+//-------图的邻接表(Adjacency List)存储表示
+typedef struct ArcNode {
+	int adjvex;             //该弧所指向的顶点位置
+	struct ArcNode* nextarc;//下个结点
+	InfoType* info;         //当前结点（弧）的信息
+}ArcNode;
+
+typedef struct VNode {
+	VertexType data;//顶点信息
+	ArcNode* firstarc;//指向第一个依附于该顶点弧的指针
+}VNode, * AdjList[MAX_VERTEX_NUM];
+
+typedef struct {
+	AdjList vertices;
+	int vexnum, arcnum;//图的当前顶点数和弧数
+	int kind;        //图的种类标志
+}ALGraph;
+
+//-------图十字链表(有向表)
+typedef struct ArcBox {
+	int tailvex, headvex;    //该弧的尾和头顶点的位置
+	struct ArcBox* hlink, * tlink;//分别为弧头相同回合弧尾相同的弧的链域
+	InfoType* info;     //该弧相关信息的指针
+}ArcBox;
+
+typedef struct VexNode {
+	VertexType data;
+	ArcBox* firstin, * firstout;//分别指向该顶点第一条弧和出弧
+}VexNode;
+
+typedef struct {
+	VexNode xlist[MAX_VERTEX_NUM];//表头向量
+	int vexnum, arcnum;      //有向图的当前顶点数和弧数 
+}OLGraph;
+
+
 
 #endif
