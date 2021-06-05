@@ -260,9 +260,9 @@ int main()
 	MGraph graph;
 	CreateGraph(graph);
 	showMatrix(graph);
-	std::cout << "BFS£º\n";
+	std::cout << "\nBFS£º\n";
 	BFSTraverse(graph);
-	std::cout << "DFS£º"<<std::endl;
+	std::cout << "\nDFS£º"<<std::endl;
 	DFSTraverse(graph);
 	return OK;
 }
