@@ -85,12 +85,12 @@ typedef struct BiTNode
 }BiTNode,*BiTree;
 
 //-------图的数组(邻接矩阵)存储表示
-#define INFINITY INT_MAX   //最大值 
+//#define INFINITY INT_MAX   //最大值 infinity在库文件有定义
 #define MAX_VERTEX_NUM 20 //最大顶点
 
 typedef char InfoType;     //附加信息类型
 typedef int VRType;        //顶点关系类型
-typedef int VertexType;    //顶点数据类型
+typedef char VertexType;    //顶点数据类型
 
 typedef enum { DG, DN, UDG, UDN } GraphKind; //{有向图，有向网，无向图，无向网}
 
