@@ -38,13 +38,40 @@ status CreateDN(MGraph& G)
 
 status CreateUDG(MGraph& G)
 {
+	//无向图
+	int IncInfo; //IncInfo为0表示各个边不存储信息
+	std::cin >> G.vexnum >> G.arcnum >> IncInfo;
+	int i, j;
+	for (i = 0; i < G.vexnum; i++) 
+		std::cin >> G.vexs[i]; //输入各个顶点的数据
+	for (i = 0; i < G.vexnum; i++) {
+		for (j = 0; j < G.vexnum; j++) 
+			G.arcs[i][j] = { INT_MAX,NULL };
+		//初始化邻接矩阵，一般是初始化为0，
+		//但是这里我与前面UDN一致是为了通用一些查找函数
+	}
+	// 输入邻接的点来构造邻接边
+	for (i = 0; i < G.arcnum; i++) {
+		VertexType v1, v2;
+		std::cin >> v1 >> v2;
+		int index1 = LocateVex(G, v1);
+		int index2 = LocateVex(G, v2);
+		G.arcs[index1][index2].adj = 1; // 1表示邻接
+		if (IncInfo) std::cin >> *G.arcs[index1][index2].info;
+		G.arcs[index2][index1] = G.arcs[index1][index2];  // 无向图对称构造
+	}
+	return OK;
+}
+
+status CreateUDN(MGraph& G)
+{
 	//无向网（无向带权图）
 	int IncInfo;//IncInfo=0,则弧不含有信息
-	std::cout<<("please input graph vertexNum ArcNum IncInfo=0 \n");
+	std::cout << ("please input graph vertexNum ArcNum IncInfo=0 \n");
 	std::cin >> G.vexnum >> G.arcnum >> IncInfo;
 	//printf("please input graph vertexNum ArcNum IncInfo=0 \n");
 	for (int i = 0; i < G.vexnum; i++) {
-		std::cin >>G.vexs[i];//构造顶点向量
+		std::cin >> G.vexs[i];//构造顶点向量
 	}
 	for (int i = 0; i < G.vexnum; i++) {
 		for (int j = 0; j < G.vexnum; ++j) {
@@ -52,7 +79,7 @@ status CreateUDG(MGraph& G)
 			G.arcs[i][j] = { INT_MAX,NULL };
 		}
 	}
-		
+
 	for (int k = 0; k < G.arcnum; k++) {
 		VertexType v1, v2; VRType w;
 
@@ -65,15 +92,8 @@ status CreateUDG(MGraph& G)
 			std::cin >> *G.arcs[i][j].info;
 		}
 		G.arcs[j][i] = G.arcs[i][j];
-		std::cout << "G.arcs["<<i<<"]["<<j<<"]"<< "," << G.arcs[i][j].adj  << std::endl;
+		std::cout << "G.arcs[" << i << "][" << j << "]" << "," << G.arcs[i][j].adj << std::endl;
 	}
-
-
-	return OK;
-}
-
-status CreateUDN(MGraph& G)
-{
 	return OK;
 }
 
@@ -101,17 +121,19 @@ status FirstAdjVex(MGraph G, VertexType v)
 	{
 		if (G.arcs[index][i].adj != INT_MAX)
 			break;
+		i++;
 	}
 	if (i == G.vexnum) return -1;
 
 	return i;
 }
 
+// 返回G中顶点v相对于u的下一邻接点
 int NextAdjVex(MGraph G, VertexType v, VertexType u) {
 	int indexV = LocateVex(G, v);
 	int indexU = LocateVex(G, u);
 	int index;
-	for (index = indexU + 1; index < G.vexnum && G.arcs[indexV][index].adj == -1; index++);
+	for (index = indexU + 1; index < G.vexnum && G.arcs[indexV][index].adj == INT_MAX; index++);
 	if (index == G.vexnum) return -1;
 	else return index;
 }
@@ -140,6 +162,28 @@ void InsertArc(MGraph& G, VertexType v, VRType w)
 void DeleteArc(MGraph& G, VertexType v, VRType w)
 {
 }
+
+// 从图中第v个顶点开始进行深度优先遍历
+void DFS(MGraph G, int v, int* visited) {
+	visited[v] = 1; //先访问顶点v
+	std::cout << G.vexs[v] << " ";
+	for (int w = FirstAdjVex(G, G.vexs[v]); w >= 0; w = NextAdjVex(G, G.vexs[v], G.vexs[w])) {
+		if (!visited[w])
+			DFS(G, w, visited); // 对v的尚未访问的邻接顶点w递归调用DFS
+	}
+}
+
+// 图的深度优先遍历
+void DFSTraverse(MGraph G) {
+	int* visited = new int[G.vexnum]; // 访问标志数组
+	for (int i = 0; i < G.vexnum; i++) visited[i] = 0; // 初始化未被访问
+	for (int i = 0; i < G.vexnum; i++) {
+		if (!visited[i])
+			DFS(G, i, visited); // 对尚未访问的顶点i调用DFS，
+											 // 因为图G可能不是连通图
+	}
+}
+
 
 void BFSTraverse(MGraph G) {
 	// 按照广度优先非递归遍历图G，使用辅助队列Q和访问标志数组visited。
@@ -195,10 +239,31 @@ int main()
 		V3 V7
 		V4 V8
 		V5 V8
-		V6 V7*/
+		V6 V7
+
+		8 9 0
+		A B C D E F G H
+		A B
+		A C
+		A D
+		B D
+		B E
+		C F
+		C G
+		D H
+		E H
+		F G
+		
+		*/
+
+
 	MGraph graph;
 	CreateGraph(graph);
 	showMatrix(graph);
+	std::cout << "BFS：\n";
+	BFSTraverse(graph);
+	std::cout << "DFS："<<std::endl;
+	DFSTraverse(graph);
 	return OK;
 }
 
