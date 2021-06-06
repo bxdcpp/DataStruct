@@ -100,13 +100,13 @@ status CreateUDN(MGraph& G)
 status CreateGraph(MGraph& G)
 {
 	//采用数组(邻接矩阵)表示法
-	G.kind = UDG;
+	G.kind = UDN;
 	switch (G.kind)
 	{
 	case DG:return CreateDG(G);
 	case DN:return CreateDN(G);
-	case UDG:return CreateUDG(G);
-	case UDN:return CreateUDN(G);
+	case UDG:return CreateUDG(G);//无向图
+	case UDN:return CreateUDN(G);//无向网（无向带权图）
 	default:return ERROR;
 
 	}
@@ -212,6 +212,58 @@ void BFSTraverse(MGraph G) {
 	}
 }
 
+//普里姆算法
+struct {
+	VertexType adjvex;
+	VRType lowcost;
+}closedge[MAX_VERTEX_NUM];
+
+int minmum(MGraph G) 
+{
+
+	int min = INT_MAX;
+	int index = -1;
+	for (int i = 0; i < G.vexnum; ++i) {
+		//最小值大于 该边的权值 且 该边的权值不为 0
+		if (min > closedge[i].lowcost && closedge[i].lowcost != 0) {
+			min = closedge[i].lowcost;
+			index = i;
+		}
+	}
+	return index;
+}
+
+
+//思想：（贪心算法） 时间复杂度：O(n*n)
+//使用辅助数组closedge{顶点，权值}
+//从当前节点写入到各个顶点的信息，已经访问过的lowcost = 0;
+//不断的求得当前到达下一个节点的最小边
+
+void MiniSpanTree_PRIM(MGraph G, VertexType u) 
+{
+	//书本P174表格
+	int k = LocateVex(G, u);//该顶点位置      k=0
+
+	for (int j = 0; j < G.vexnum; ++j)//辅助数组初始化
+		if (j != k)//相当于u顶点 边的信息
+			closedge[j] = { u,G.arcs[k][j].adj };//{adjvex,lowcost}
+
+	closedge[k].lowcost = 0;//初始，U={u}，把u并入集合
+
+	for (int i = 1; i < G.vexnum; ++i) 
+	{//选择其余G.vexnum-1个顶点
+		k = minmum(G);    //求出T的下一个结点，第k顶点
+		printf("%c-->%c\n", closedge[k].adjvex, G.vexs[k]);//输出 生成树边
+		closedge[k].lowcost = 0;//第k顶点并入U集
+
+		for (int j = 0; j < G.vexnum; ++j)
+			if (G.arcs[k][j].adj < closedge[j].lowcost)
+				//新顶点并入U后重新选择最小边
+				closedge[j] = { G.vexs[k],G.arcs[k][j].adj };
+	}
+}
+
+
 int main()
 {
 	/*无向网
@@ -264,6 +316,9 @@ int main()
 	BFSTraverse(graph);
 	std::cout << "\nDFS："<<std::endl;
 	DFSTraverse(graph);
+	std::cout << std::endl;
+	std::cout << "prim：" << std::endl;
+	MiniSpanTree_PRIM(graph, 'A');
 	return OK;
 }
 
