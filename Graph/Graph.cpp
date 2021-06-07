@@ -6,6 +6,7 @@
 #include <queue>
 //#include <limits.h>
 //#include <cmath>
+#define MAX 1024
 
 void showMatrix(MGraph G)
 {
@@ -46,7 +47,7 @@ status CreateUDG(MGraph& G)
 		std::cin >> G.vexs[i]; //输入各个顶点的数据
 	for (i = 0; i < G.vexnum; i++) {
 		for (j = 0; j < G.vexnum; j++) 
-			G.arcs[i][j] = { INT_MAX,NULL };
+			G.arcs[i][j] = { MAX,NULL };
 		//初始化邻接矩阵，一般是初始化为0，
 		//但是这里我与前面UDN一致是为了通用一些查找函数
 	}
@@ -76,7 +77,7 @@ status CreateUDN(MGraph& G)
 	for (int i = 0; i < G.vexnum; i++) {
 		for (int j = 0; j < G.vexnum; ++j) {
 			//init graph
-			G.arcs[i][j] = { INT_MAX,NULL };
+			G.arcs[i][j] = { MAX,NULL };
 		}
 	}
 
@@ -119,7 +120,7 @@ status FirstAdjVex(MGraph G, VertexType v)
 	int i = 0;
 	while (i < G.vexnum)
 	{
-		if (G.arcs[index][i].adj != INT_MAX)
+		if (G.arcs[index][i].adj != MAX)
 			break;
 		i++;
 	}
@@ -133,7 +134,7 @@ int NextAdjVex(MGraph G, VertexType v, VertexType u) {
 	int indexV = LocateVex(G, v);
 	int indexU = LocateVex(G, u);
 	int index;
-	for (index = indexU + 1; index < G.vexnum && G.arcs[indexV][index].adj == INT_MAX; index++);
+	for (index = indexU + 1; index < G.vexnum && G.arcs[indexV][index].adj == MAX; index++);
 	if (index == G.vexnum) return -1;
 	else return index;
 }
@@ -221,7 +222,7 @@ struct {
 int minmum(MGraph G) 
 {
 
-	int min = INT_MAX;
+	int min = MAX;
 	int index = -1;
 	for (int i = 0; i < G.vexnum; ++i) {
 		//最小值大于 该边的权值 且 该边的权值不为 0
@@ -260,6 +261,47 @@ void MiniSpanTree_PRIM(MGraph G, VertexType u)
 			if (G.arcs[k][j].adj < closedge[j].lowcost)
 				//新顶点并入U后重新选择最小边
 				closedge[j] = { G.vexs[k],G.arcs[k][j].adj };
+	}
+}
+
+
+//最短路径，迪杰斯特拉算法
+typedef int Patharc[MAX_VERTEX_NUM];//用于存储最短路径下标的数组
+typedef int ShortPathTable[MAX_VERTEX_NUM];//用于存储到各点最短路径的权值和
+
+void ShortestPath_DIJ(MGraph G, int V0, Patharc& P, ShortPathTable& D) {
+	int v, w, min, k = NULL;
+	int final[MAX_VERTEX_NUM];  //final[w]=1 表示已经求得顶点V0到Vw的最短路径
+
+	//初始化数据
+	for (v = 0; v < G.vexnum; v++) {
+		final[v] = 0;             //全部顶点初始化为未找到最短路径
+		D[v] = G.arcs[V0][v].adj; //将与V0点有连线的顶点加上权值
+		P[v] = 0;                 //初始化路径数组P为0
+	}
+
+	D[V0] = 0;    //V0至V0路径为0
+	final[V0] = 1;//V0至V0不需要求路径
+
+	//开始主循环，每次求得V0到某个v顶点的最短路径
+	for (v = 1; v < G.vexnum; v++) {
+		min = MAX;
+		//循环后得到一个已知最短路径的顶点，作为发散修正的顶点
+		for (w = 0; w < G.vexnum; w++)
+			if (!final[w] && D[w] < min) {
+				k = w;
+				min = D[w];
+			}
+		final[k] = 1; //将目前找到的最近的顶点置1
+		//修正当前最短路径 及距离
+		//从该顶点发散出去的各个顶点距离修正
+		for (w = 0; w < G.vexnum; w++)
+			//如果经过v顶点的路径比现在这条路径的长度短的话，更新
+			if (!final[w] && (min + G.arcs[k][w].adj < D[w])) {
+				D[w] = min + G.arcs[k][w].adj;//修改当前路径长度
+				P[w] = k;     //存放前驱顶点
+			}
+
 	}
 }
 
@@ -319,6 +361,16 @@ int main()
 	std::cout << std::endl;
 	std::cout << "prim：" << std::endl;
 	MiniSpanTree_PRIM(graph, 'A');
+
+	Patharc p; ShortPathTable dis;
+	std::cout << "ShortestPath_DIJ：" << std::endl;
+	ShortestPath_DIJ(graph, 0, p, dis);
+
+	for (int i = 0; i < graph.vexnum; i++)
+	{
+		std::cout << dis[i] <<" "<<std::endl;
+	}
+
 	return OK;
 }
 
