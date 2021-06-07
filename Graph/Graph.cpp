@@ -306,6 +306,36 @@ void ShortestPath_DIJ(MGraph G, int V0, Patharc& P, ShortPathTable& D) {
 }
 
 
+//最短路径，佛洛依德算法
+//本质就是动态规划
+//时间复杂度 n*n*n
+typedef int PathMatrix[MAX_VERTEX_NUM][MAX_VERTEX_NUM];
+typedef int DistancMatrix[MAX_VERTEX_NUM][MAX_VERTEX_NUM];
+
+void ShortestPath_FLOYD(MGraph G, PathMatrix& P, DistancMatrix& D) 
+{
+	int v, w, k;
+	//初始化D和P
+	for (v = 0; v < G.vexnum; v++)
+		for (w = 0; w < G.vexnum; w++)
+		{
+			D[v][w] = G.arcs[v][w].adj;
+			P[v][w] = -1;
+		}
+
+	//算法核心
+	for (k = 0; k < G.vexnum; k++)
+		for (v = 0; v < G.vexnum; v++)
+			for (w = 0; w < G.vexnum; w++)
+				if (D[v][w] > D[v][k] + D[k][w])
+				{
+					D[v][w] = D[v][k] + D[k][w];
+					P[v][w] = P[v][k];
+				}
+}
+
+
+
 int main()
 {
 	/*无向网
