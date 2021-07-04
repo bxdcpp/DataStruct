@@ -12,6 +12,9 @@ Description:Provide  Data struct define
 #ifndef __DATADEFINE_H
 #define __DATADEFINE_H
 
+//#include <string>
+//#include <vector>
+
 #define ERROR -1
 #define OK 0
 typedef  int status;
@@ -91,6 +94,7 @@ typedef struct BiTNode
 typedef char InfoType;     //附加信息类型
 typedef int VRType;        //顶点关系类型
 typedef char VertexType;    //顶点数据类型
+//typedef std::vector<std::string> VertexType;
 
 typedef enum { DG, DN, UDG, UDN } GraphKind; //{有向图，有向网，无向图，无向网}
 
