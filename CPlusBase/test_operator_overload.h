@@ -1,5 +1,8 @@
 ﻿// TestVirtual.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
+//https://blog.csdn.net/weixin_43734095/article/details/104465307
+
+
 #ifndef __TEST_OPERATOR_OVERLOAD_H
 #define __TEST_OPERATOR_OVERLOAD_H
 
@@ -11,17 +14,17 @@ namespace bxd015 {
     using namespace std;
     class Complex {
     public:
-        Complex() = default;
-        Complex(double r,double i);
-       Complex(const Complex& c);
-       Complex(const Complex&& c);
-        Complex& operator= (const Complex& c);
+		Complex() = default;
+		Complex(double r, double i);
+		Complex(const Complex & c);
+		Complex(const Complex && c);
+		Complex& operator= (const Complex & c);
 
          ~Complex();
     public:
         const Complex operator+(Complex& c);
         const Complex operator-(Complex& c);
-        void  operator+=(Complex& c);
+        Complex&  operator+=(Complex& c);
         inline ostream& operator << (ostream& os);//能运行不符合常理
     public:
        friend ostream& operator << (ostream& os,const Complex& c);
@@ -83,11 +86,12 @@ namespace bxd015 {
         return Complex(real-c.real,imag-c.imag);
     }
 
-    inline  void Complex::operator+=(Complex& c)
+    inline  Complex& Complex::operator+=(Complex& c)
     {
         cout << "ooperator+=" << endl;
         real += c.real;
         imag += c.imag;
+        return *this;
     }
 
     inline ostream& Complex::operator<<(ostream& os)
@@ -154,7 +158,7 @@ namespace bxd015 {
         cout << E << B << A << endl;*/
 
         Complex F(8, 9);
-        F += A;
+        F += A+=B;
         cout << F<<endl;
 
         // operator / 构造,拷贝构造
