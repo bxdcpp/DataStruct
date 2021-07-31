@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 2.8)
 project(DataStruct)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CXX_STANDARD_REQUIRED ON)
+#下面代码开启/Zc:__cplusplus选项
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
 
 add_subdirectory(Linkedlist/SingleLinkedlist)
 add_subdirectory(Stack)	
@@ -12,4 +15,5 @@ add_subdirectory(BFS)
 add_subdirectory(CPlusBase)		
 add_subdirectory(Graph)
 add_subdirectory(Thread)
+add_subdirectory(Memery)
 add_subdirectory(Sort)

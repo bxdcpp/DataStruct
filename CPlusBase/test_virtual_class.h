@@ -328,4 +328,45 @@ namespace bxd011
 }
 
 
+//类成员大小测试
+namespace bxd012 {
+
+    //# pragma pack(16)
+    struct A {
+        char a;
+        double b;
+        short c;
+    };
+
+    struct B {
+        char a;
+        short c;
+        double b;
+    };
+
+    class C {
+    private:
+        char a;
+        double b;
+        short c;
+    };
+
+    class D {
+    private:
+        char a;
+        short c;
+        double b;
+    };
+
+    void test_size()
+    {
+        std::cout << "A struct size:" << sizeof(A) << std::endl;
+        std::cout << "B struct size:" << sizeof(B) << std::endl;
+        std::cout << "C claas size:" << sizeof(A) << std::endl;
+        std::cout << "D class size:" << sizeof(B) << std::endl;
+    }
+}
+
+
+
 
