@@ -1,5 +1,6 @@
 
 #include <utility>  // std::swap
+#include <atomic>
 
 class shared_count {
 public:
@@ -19,7 +20,7 @@ public:
 	}
 
 private:
-	long count_;
+	std::atomic<long> count_;
 };
 
 template <typename T>

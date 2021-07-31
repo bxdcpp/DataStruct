@@ -1,9 +1,10 @@
-project(SmartPointer)
+project(Programming)
 
 #add_compile_options(-std=c++11)
 #aux_source_directory(. single_file_examples)	
 set(SRC
 smart_ptr.h
+test_virtual_class.h
 main.cpp
   )
   include_directories(
