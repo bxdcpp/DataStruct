@@ -258,7 +258,7 @@ void HeapSort(std::vector<int>& array)
 }
 
 /*-----------------------快排--------------------------------*/
-int Paritition(int A[], int low, int high) {
+int Partition(int A[], int low, int high) {
 	int pivot = A[high];
 	int i = low - 1;
 	for (int j = low; j < high; j++)
@@ -298,7 +298,7 @@ int Paritition1(int A[], int low, int high) {
 void QuickSort(int A[], int low, int high) //快排母函数
 {
 	if (low < high) {
-		int pivot = Paritition(A, low, high);
+		int pivot = Partition(A, low, high);
 		QuickSort(A, low, pivot - 1);
 		QuickSort(A, pivot + 1, high);
 	}
