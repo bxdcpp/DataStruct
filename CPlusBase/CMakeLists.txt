@@ -5,6 +5,7 @@ project(Programming)
 set(SRC
 smart_ptr.h
 test_virtual_class.h
+test_operator_overload.h
 main.cpp
   )
   include_directories(

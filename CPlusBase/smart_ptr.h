@@ -1,6 +1,9 @@
+#ifndef __SMART_PTR_H
+#define __SMART_PTR_H
 
 #include <utility>  // std::swap
 #include <atomic>
+#include<iostream>
 
 class shared_count {
 public:
@@ -173,3 +176,32 @@ smart_ptr<T> dynamic_pointer_cast(
 	T* ptr = dynamic_cast<T*>(other.get());
 	return smart_ptr<T>(other, ptr);
 }
+
+
+class shape {
+public:
+	virtual ~shape() {}
+};
+
+class circle : public shape {
+public:
+	~circle() { puts("~circle()"); }
+};
+
+void test_smartPtr()
+{
+	smart_ptr<circle> ptr1(new circle());
+	printf("use count of ptr1 is %ld\n",
+		ptr1.use_count());
+	smart_ptr<shape> ptr2;
+	printf("use count of ptr2 was %ld\n",
+		ptr2.use_count());
+	ptr2 = ptr1;
+	printf("use count of ptr2 is now %ld\n",
+		ptr2.use_count());
+	if (ptr1) {
+		puts("ptr1 is not empty");
+	}
+}
+
+#endif /*__PROTECT_TEST_H*/
