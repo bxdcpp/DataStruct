@@ -167,6 +167,9 @@ namespace bxd015 {
         
         Complex G = F / A;//返回值优化，一次构造
         cout << G << endl;
+        int a = 7; int b = 8;
+        int c = 9;
+        a += c += b;
 
     }
 
