@@ -516,7 +516,7 @@ int main()
 	}*/
 
 	//bxd004::test_lock_dead();
-	//bxd005::test_order_print();
+	bxd005::test_order_print();
 	/*bxd006::test_call_once();
 	bxd006::test_call_once2();*/
 	//bxd007::test_condition_variable();

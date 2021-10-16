@@ -107,22 +107,33 @@ namespace jj02
         //! pstr->string::string("jjhou");  
                                 //[Error] 'class std::basic_string<char>' has no member named 'string'
         //! pstr->~string();	//crash -- 其語法語意都是正確的, crash 只因為上一行被 remark 起來嘛.  
+        pstr->~string();
+        
         cout << "str= " << *pstr << endl;
 
 
         //------------
 
         A* pA = new A(1);         	//ctor. this=000307A8 id=1
+                                    //in VS2019 ctor, this=0000011EF53F6880 id =1
+
+                                    
         cout << pA->id << endl;   	//1
     //!	pA->A::A(3);                //in VC6 : ctor. this=000307A8 id=3
+        pA-> A::A(3);               //in VS2019 ctor, this=0000011EF53F6880 id =3
                                     //in GCC : [Error] cannot call constructor 'jj02::A::A' directly
 
     //!	A::A(5);	  				//in VC6 : ctor. this=0013FF60 id=5
-                                    //         dtor. this=0013FF60  	
+        A::A(5);                    //         dtor. this=0013FF60  
+
+                                   //in VC16:ctor. this=00000009651CF9D0 id=5
+                                   //in VC16 dtor. this = 000000FE1512F960 id = 5
+
                                     //in GCC : [Error] cannot call constructor 'jj02::A::A' directly
                                     //         [Note] for a function-style cast, remove the redundant '::A'
 
         cout << pA->id << endl;   	//in VC6 : 3
+                                    //in VS2019:3
                                     //in GCC : 1  	
 
         delete pA;                	//dtor. this=000307A8 
@@ -130,17 +141,21 @@ namespace jj02
         //simulate new
         void* p = ::operator new(sizeof(A));
         cout << "p=" << p << endl; 	//p=000307A8
+                                    //in VC16 p=0000011EF53F6880
         pA = static_cast<A*>(p);
         //!	pA->A::A(2);				//in VC6 : ctor. this=000307A8 id=2
+        pA->A::A(2);                    //in VC16: ctor. this=0000011EF53F6880 id=2
                                         //in GCC : [Error] cannot call constructor 'jj02::A::A' directly  	
 
         cout << pA->id << endl;     //in VC6 : 2
                                     //in GCC : 0
-                                    //in MSVC2019: -842350451
+                                    //in VC16: 2
 
         //simulate delete
         pA->~A();					//dtor. this=000307A8 
+                                    // in VC16:dtor. this=0000011EF53F6880 id=2
         ::operator delete(pA);		//free()
+
     }
 } //namespace
 //----------------------------------------------------
@@ -178,6 +193,27 @@ namespace jj03
             delete buf;     	//dtor just one time, ~[0]	
 
             cout << "\n\n";
+
+
+            A* buf1 = (A*)(new char[sizeof(A) * size]);
+            char* tmp1 = (char*)buf1;
+
+            cout << "buf1=" << buf1 << "  tmp1=" << tmp1 << endl;
+
+            int n = sizeof(A) * size / sizeof(char);
+            int count = 0;
+
+            for (int i = 0; i < n; i++) {
+                new(tmp1++)char(i);
+                count++;
+            }
+            cout << "count=" << count  << endl;
+
+            char* p = (char*)buf1;
+			delete [] p;
+
+
+
         }
 
         {
@@ -1677,9 +1713,9 @@ int main(int argc, char** argv)
     cout << _MSC_VER << endl;
     cout << __cplusplus << endl;
 
-    //jj01::test_primitives();
+    jj01::test_primitives();
 
-    //jj02::test_call_ctor_directly();
+    jj02::test_call_ctor_directly();
 
     jj03::test_array_new_and_placement_new();
 
