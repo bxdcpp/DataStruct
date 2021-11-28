@@ -289,49 +289,73 @@ namespace bxd011
         virtual void derive1_fun2() {}
     };
 
-    void test_memory_layout()
+   
+}
+
+void test_memory_layout(int caseNumber)
+{
+    switch (caseNumber)
     {
+    case 1:
+    {
+          //要想知道C++对象的内存布局, 可以有多种方式, 比如:
+          //输出成员变量的偏移, 通过offsetof宏来得到
+          //通过调试器查看, 比如常用的VS
+          using namespace bxd001;
 
-        {
-            //要想知道C++对象的内存布局, 可以有多种方式, 比如:
-            //输出成员变量的偏移, 通过offsetof宏来得到
-            //通过调试器查看, 比如常用的VS
-            using namespace bxd001;
-
-            std::cout << "Base1 size:" << sizeof(Base1) << std::endl;
-            std::cout << "base1_1:" << offsetof(Base1, base1_1) << std::endl;
-            std::cout << "base1_2:" << offsetof(Base1, base1_2) << std::endl;
-        }
-
-        {
-            //结论:
-            //1.虚函数表
-            using namespace bxd002;
-            Base1 b1;
-            std::cout << "Base1 size:" << sizeof(Base1) << std::endl;
-            std::cout << "base1_1:" << offsetof(Base1, base1_1) << std::endl;
-            std::cout << "base1_2:" << offsetof(Base1, base1_2) << std::endl;
-
-        }
-
-
-        {
-            using namespace bxd003;
-        }
-
-
-        {
-            using namespace bxd004;
-        }
-
-        {
-            using namespace bxd005;
-        }
-
-
-
-        std::cout << "Hello World!\n";
+          std::cout << "Base1 size:" << sizeof(Base1) << std::endl;
+          std::cout << "base1_1:" << offsetof(Base1, base1_1) << std::endl;
+          std::cout << "base1_2:" << offsetof(Base1, base1_2) << std::endl;
     }
+	break;
+	case 2:
+	{
+		//结论:
+		//1.虚函数表
+		using namespace bxd002;
+		Base1 b1;
+		std::cout << "Base1 size:" << sizeof(Base1) << std::endl;
+		std::cout << "base1_1:" << offsetof(Base1, base1_1) << std::endl;
+		std::cout << "base1_2:" << offsetof(Base1, base1_2) << std::endl;
+
+	}
+	break;
+	case 8:
+
+	{
+		using namespace bxd008;
+		Derive1 d1;
+		Derive1* pd1 = &d1;
+		pd1->derive1_fun1();
+	}
+	break;
+	case 3:
+
+	{
+		using namespace bxd003;
+        Base1 b1;
+        std::cout << "Base1 size:" << sizeof(Base1) << std::endl;
+        std::cout << "base1_1:" << offsetof(Base1, base1_1) << std::endl;
+        std::cout << "base1_2:" << offsetof(Base1, base1_2) << std::endl;
+
+	}
+	break;
+
+	case 4:
+	{
+		using namespace bxd004;
+	}
+	break;
+	case 5:
+	{
+		using namespace bxd005;
+	}
+	break;
+
+	default:
+		break;
+	}
+    std::cout << "Hello World!\n";
 }
 
 
@@ -367,6 +391,7 @@ namespace bxd012 {
 
     void test_size()
     {
+        std::cout << "test_size........................"  << std::endl;
         std::cout << "A struct size:" << sizeof(A) << std::endl;
         std::cout << "B struct size:" << sizeof(B) << std::endl;
         std::cout << "C claas size:" << sizeof(C) << std::endl;

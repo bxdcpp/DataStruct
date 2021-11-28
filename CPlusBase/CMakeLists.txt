@@ -7,6 +7,8 @@ smart_ptr.h
 test_virtual_class.h
 test_operator_overload.h
 test_stl.h
+hjj_c11.h
+rvo.h
 main.cpp
   )
   include_directories(
